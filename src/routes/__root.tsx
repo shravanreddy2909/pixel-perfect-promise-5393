@@ -12,6 +12,13 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider, useStudentAuth } from '@/components/auth-provider';
+import { Button } from '@/components/ui/button';
+import { Toaster } from '@/components/ui/sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { ArrowLeftRight, ArrowUpRight, LogOut, Menu } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 function NotFoundComponent() {
   return (
@@ -81,16 +88,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "SkillSwap — Share a skill, grow together" },
+      { name: "description", content: "A free skill-exchange community for college students." },
+      { name: "author", content: "SkillSwap" },
+      { property: "og:title", content: "SkillSwap — Share a skill, grow together" },
+      { property: "og:description", content: "A free skill-exchange community for college students." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap' },
       {
         rel: "stylesheet",
         href: appCss,
@@ -123,8 +132,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthProvider><SiteHeader/><Outlet/><SiteFooter/><Toaster/></AuthProvider>
     </QueryClientProvider>
   );
 }
+
+function SiteHeader() {
+  const {user}=useStudentAuth();const router=useRouter();const queryClient=useQueryClient();const [open,setOpen]=useState(false);
+  async function signOut(){await queryClient.cancelQueries();queryClient.clear();await supabase.auth.signOut();await router.navigate({to:'/auth',replace:true});setOpen(false);}
+  const links=user?[{to:'/dashboard' as const,label:'Dashboard'},{to:'/browse' as const,label:'Browse students'},{to:'/requests' as const,label:'Requests'},{to:'/chat' as const,label:'Messages'},{to:'/profile' as const,label:'My profile'}]:[{to:'/' as const,label:'Home'},{to:'/how-it-works' as const,label:'How it works'},{to:'/community' as const,label:'The community'}];
+  return <header className="site-header relative z-30"><div className="max-w-[1240px] mx-auto h-20 px-6 sm:px-10 flex items-center justify-between gap-5"><Link to="/" className="flex items-center gap-2.5"><span className="size-8 border border-primary-foreground/30 rounded-lg grid place-items-center"><ArrowLeftRight size={18}/></span><span className="display text-[25px]">SkillSwap<span className="text-gold">.</span></span></Link><nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">{links.map(l=><Link className="nav-link" to={l.to} key={l.to}>{l.label}</Link>)}</nav><div className="flex items-center gap-3">{user?<Button variant="ghost" size="icon" aria-label="Sign out" title="Sign out" onClick={()=>void signOut()}><LogOut/></Button>:<><Link className="nav-link hidden sm:block" to="/auth">Sign in</Link><Button variant="nav" asChild><Link to="/auth">Join for free<ArrowUpRight/></Link></Button></>}<Button className="md:hidden" variant="ghost" size="icon" aria-label="Open navigation" aria-expanded={open} onClick={()=>setOpen(!open)}><Menu/></Button></div></div>{open&&<nav className="md:hidden flex flex-col px-6 pb-5 gap-4" aria-label="Mobile navigation">{links.map(l=><Link className="nav-link" to={l.to} key={l.to} onClick={()=>setOpen(false)}>{l.label}</Link>)}{!user&&<Link to="/auth" className="nav-link" onClick={()=>setOpen(false)}>Sign in</Link>}</nav>}</header>;
+}
+function SiteFooter(){return <footer className="border-t border-border"><div className="max-w-[1180px] mx-auto px-6 sm:px-8 py-7 flex flex-wrap gap-4 justify-between items-center"><Link to="/" className="display text-xl text-primary flex gap-2 items-center"><ArrowLeftRight size={17}/>SkillSwap.</Link><p className="text-xs text-muted-foreground">Made for curious minds. Powered by each other.</p><span className="text-xs text-muted-foreground">© 2026 SkillSwap</span></div></footer>;}

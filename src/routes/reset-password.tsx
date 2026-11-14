@@ -1,0 +1,10 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { pageHead } from '@/lib/metadata';
+export const Route = createFileRoute('/reset-password')({head:()=>pageHead('Reset password','Set a new password for your SkillSwap account.'),component:ResetPassword});
+function ResetPassword(){const [valid,setValid]=useState(false);const [ready,setReady]=useState(false);const [busy,setBusy]=useState(false);const [result,setResult]=useState('');const [error,setError]=useState('');
+useEffect(()=>{const recovery=new URLSearchParams(window.location.hash.slice(1)).get('type')==='recovery';void supabase.auth.getUser().then(({data})=>{setValid(recovery&&!!data.user);setReady(true);});},[]);
+async function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault();const f=new FormData(e.currentTarget);if(f.get('password')!==f.get('confirm')){setError('Passwords do not match.');return;}setBusy(true);const {error}=await supabase.auth.updateUser({password:String(f.get('password'))});setBusy(false);if(error)setError(error.message);else{setResult('Your password has been updated.');setError('');}}
+return <main className="page-wrap max-w-lg"><h1 className="section-title mb-6">A fresh start.</h1>{!ready?<p>Checking reset link…</p>:!valid?<p className="text-sm">This reset link is missing or expired. <Link to="/auth" className="text-primary underline">Request a new one</Link>.</p>:result?<><p className="text-sage mb-4">{result}</p><Button asChild><Link to="/dashboard">Continue to dashboard</Link></Button></>:<form onSubmit={submit} className="grid gap-5"><label className="field">New password<input type="password" name="password" minLength={6} required autoComplete="new-password"/></label><label className="field">Confirm password<input type="password" name="confirm" minLength={6} required autoComplete="new-password"/></label>{error&&<p role="alert" className="text-sm text-destructive">{error}</p>}<Button disabled={busy}>Update password</Button></form>}</main>;}

@@ -1,23 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { ArrowRight, ArrowUpRight, ArrowLeftRight, Code2, Guitar, Palette, Sparkles, UserRound, Users, Heart, Check, GraduationCap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useStudentAuth } from '@/components/auth-provider';
+import { pageHead } from '@/lib/metadata';
+import campus from '@/assets/campus-community.jpg';
+export const Route = createFileRoute('/')({ head: () => pageHead('SkillSwap — A little give. A little grow.', 'Share what you know. Learn what you love. SkillSwap connects college students for free, meaningful skill exchanges.'), component: Index });
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+  const {user}=useStudentAuth();
+  return <main><section className="hero"><img src={campus} alt="Students learning together on a sunny college campus" width={1536} height={1024} className="hero-photo" fetchPriority="high"/><div className="hero-wash"/>
+  <div className="max-w-[1240px] mx-auto px-6 sm:px-10 pt-16 sm:pt-20 relative z-10"><div className="max-w-[560px]"><span className="hero-eyebrow text-xs"><span className="size-1.5 rounded-full bg-sage"/>Made for students. Built on sharing.</span><h1 className="hero-title mt-7">SkillSwap<span className="block mt-2">A little give.<br/><em>A little grow.</em></span></h1><p className="text-muted-foreground text-sm sm:text-base leading-7 max-w-[390px] mt-6">You have something to teach. Someone has something you’d love to learn. Find each other, swap skills, and grow together.</p><div className="flex flex-wrap gap-3 mt-7"><Button variant="hero" size="lg" className="h-12 px-6" asChild><Link to={user?'/dashboard':'/auth'}>{user?'Your dashboard':'Find your skill match'}<ArrowRight/></Link></Button><Button variant="outline" size="lg" className="h-12 px-5" asChild><Link to={user?'/browse':'/auth'}>Explore the community<ArrowUpRight/></Link></Button></div><div className="flex items-center gap-5 mt-7 text-xs text-muted-foreground"><span className="flex gap-1.5 items-center"><Check size={13} className="text-sage"/>100% free, always</span><span className="flex gap-1.5 items-center"><GraduationCap size={15}/>For college students</span></div></div></div>
+  <div className="skill-float one"><div className="flex items-center justify-between mb-4"><div className="float-icon"><Code2 size={21}/></div><span className="eyebrow text-muted-foreground">I can teach</span></div><h3 className="text-2xl">Web development</h3><p className="text-xs text-muted-foreground mt-2">A few lines. Endless possibilities.</p><div className="flex gap-1.5 mt-4"><span className="skill-pill">React</span><span className="skill-pill">Python</span></div></div>
+  <div className="skill-float two"><div className="flex items-center justify-between mb-3"><div className="float-icon gold"><Guitar size={22}/></div><span className="eyebrow text-muted-foreground">I want to learn</span></div><h3 className="text-2xl">Acoustic guitar</h3><p className="text-xs text-muted-foreground mt-2">From first chords to favorite songs.</p><span className="skill-pill learn-pill mt-3">Let’s start together</span></div>
+  <div className="skill-float three"><div className="flex items-center gap-3"><div className="float-icon sage"><Palette size={22}/></div><div><h3 className="text-xl">Design thinking</h3><p className="text-xs text-muted-foreground mt-1">Creativity is contagious.</p></div></div><div className="border-t border-border mt-4 pt-3 flex items-center gap-2 text-xs text-sage"><Sparkles size={13}/>A perfect two-way match<ArrowLeftRight size={13}/></div></div>
+  </section>
+  <section className="border-y border-border bg-card/50"><div className="max-w-[1180px] mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-6"><p className="display text-lg text-primary">Good at something? <em>Pass it on.</em></p><div className="flex flex-wrap gap-6 sm:gap-12 text-xs text-muted-foreground"><span className="flex items-center gap-2"><Heart size={17} className="text-primary"/>No money. Just mutual growth.</span><span className="flex items-center gap-2"><Users size={17} className="text-primary"/>Real students. Real connections.</span><span className="flex items-center gap-2"><Sparkles size={17} className="text-gold"/>Everyone has something to share.</span></div></div></section>
+  <section className="max-w-[1180px] mx-auto px-6 sm:px-8 py-16"><div className="text-center"><p className="eyebrow text-primary mb-3">The simplest kind of exchange</p><h2 className="section-title">Three steps. Two students.<br className="sm:hidden"/> A world of possibilities.</h2><p className="text-sm text-muted-foreground mt-4">Your next skill is closer than you think.</p></div><div className="grid md:grid-cols-3 gap-8 mt-12">{[{icon:UserRound,n:'01',title:'Bring your skills',copy:'Create your profile. Add what you can teach and what you’re curious to learn.'},{icon:Users,n:'02',title:'Find your people',copy:'Meet students whose skills complement yours. A good match goes both ways.'},{icon:ArrowLeftRight,n:'03',title:'Swap. Learn. Repeat.',copy:'Send an exchange request, make a connection, and start learning together.'}].map(({icon:Icon,n,title,copy})=><div key={n} className="relative p-6"><span className="display text-6xl text-border absolute right-7 top-2">{n}</span><div className="float-icon mb-6"><Icon size={22}/></div><h3 className="text-2xl mb-3">{title}</h3><p className="text-sm text-muted-foreground leading-6 max-w-[290px]">{copy}</p></div>)}</div></section>
+  <section className="border-t border-border bg-card/60"><div className="max-w-[1180px] mx-auto px-6 sm:px-8 py-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-7"><div><p className="eyebrow text-primary mb-3">A campus full of possibilities</p><h2 className="section-title">You don’t need to know everything.<br/><em>Just someone who knows something.</em></h2></div><Button variant="hero" size="lg" className="h-12" asChild><Link to={user?'/browse':'/auth'}>{user?'Meet your community':'Join SkillSwap for free'}<ArrowRight/></Link></Button></div></section></main>;
 }

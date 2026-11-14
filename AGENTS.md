@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Keep public pages at top level and signed-in student pages under the managed `_authenticated` layout so private views never render before session validation.
+- Use browser Data API queries within client-only protected route loaders and React Query; enforce all data access and request transitions with database RLS and triggers.
+- Keep matching as a deterministic shared pure function, not a generative AI call, so mutual skill fit is reproducible and testable.
+- Keep a single root auth subscriber for session-driven navigation and cache invalidation; cancel and clear protected queries before sign-out.
