@@ -15,6 +15,13 @@
       "when": 1795104660554,
       "tag": "0001_restrict_avatar_reads_to_owner_or_profile_photo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795105410194,
+      "tag": "0002_limit_skill_reads_to_listed_students",
+      "breakpoints": true
     }
   ]
 }
