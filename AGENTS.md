@@ -33,3 +33,4 @@ use the editor.
 - Use browser Data API queries within client-only protected route loaders and React Query; enforce all data access and request transitions with database RLS and triggers.
 - Keep matching as a deterministic shared pure function, not a generative AI call, so mutual skill fit is reproducible and testable.
 - Keep a single root auth subscriber for session-driven navigation and cache invalidation; cancel and clear protected queries before sign-out.
+- Allow avatar reads only for the caller's own folder or the exact current photo referenced by its folder owner's profile; this preserves community photos without exposing unused uploads.

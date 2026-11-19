@@ -8,6 +8,13 @@
       "when": 1794662662396,
       "tag": "0000_skillswap_student_exchange",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795104660554,
+      "tag": "0001_restrict_avatar_reads_to_owner_or_profile_photo",
+      "breakpoints": true
     }
   ]
 }
